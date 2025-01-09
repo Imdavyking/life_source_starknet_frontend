@@ -1,0 +1,133 @@
+[
+  {
+    "type": "impl",
+    "name": "LifeSourceManagerImpl",
+    "interface_name": "life_source::ILifeSourceManager"
+  },
+  {
+    "type": "struct",
+    "name": "core::integer::u256",
+    "members": [
+      { "name": "low", "type": "core::integer::u128" },
+      { "name": "high", "type": "core::integer::u128" }
+    ]
+  },
+  {
+    "type": "interface",
+    "name": "life_source::ILifeSourceManager",
+    "items": [
+      {
+        "type": "function",
+        "name": "add_point_from_weight",
+        "inputs": [
+          { "name": "weight_in_grams", "type": "core::integer::u256" }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "redeem_code",
+        "inputs": [
+          { "name": "points_to_redeem", "type": "core::integer::u256" }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "get_token_price",
+        "inputs": [
+          {
+            "name": "token",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [{ "type": "core::integer::u256" }],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "get_user_points",
+        "inputs": [
+          {
+            "name": "user",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [{ "type": "core::integer::u256" }],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "token_address",
+        "inputs": [],
+        "outputs": [
+          { "type": "core::starknet::contract_address::ContractAddress" }
+        ],
+        "state_mutability": "view"
+      }
+    ]
+  },
+  {
+    "type": "constructor",
+    "name": "constructor",
+    "inputs": [
+      {
+        "name": "class_hash",
+        "type": "core::starknet::class_hash::ClassHash"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "life_source::LifeSourceManager::AddPointFromWeight",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "points_to_add",
+        "type": "core::integer::u256",
+        "kind": "data"
+      },
+      {
+        "name": "user",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "life_source::LifeSourceManager::RedeemCode",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "points_to_redeem",
+        "type": "core::integer::u256",
+        "kind": "data"
+      },
+      {
+        "name": "user",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "life_source::LifeSourceManager::Event",
+    "kind": "enum",
+    "variants": [
+      {
+        "name": "AddPointFromWeight",
+        "type": "life_source::LifeSourceManager::AddPointFromWeight",
+        "kind": "nested"
+      },
+      {
+        "name": "RedeemCode",
+        "type": "life_source::LifeSourceManager::RedeemCode",
+        "kind": "nested"
+      }
+    ]
+  }
+]
