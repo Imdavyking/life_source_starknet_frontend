@@ -12,6 +12,7 @@ import {
   useAccount,
   useContract,
   useSendTransaction,
+  useReadContract,
 } from "@starknet-react/core";
 import { PROTOCOL_ADDRESS } from "../../utils/constants";
 import abi from "@/assets/json/abi.json";
@@ -20,24 +21,58 @@ function Main() {
   useEffect(() => {
     dom("body").removeClass("main").removeClass("error-page").addClass("login");
   }, []);
-  const [isDonating, setIsAddingPoints] = useState(false);
+  const [isDonating, setIsDonating] = useState(false);
   const { address, account } = useAccount();
   const { contract } = useContract({
     abi,
     address: PROTOCOL_ADDRESS,
   });
-  const [weight, setWeight] = useState("");
+  const { erc20Contract } = useContract({
+    abi,
+    address: PROTOCOL_ADDRESS,
+  });
 
+  const STRK_ADDR =
+    "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";
+  const ETH_ADDR =
+    "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";
+  const [amount, setAmount] = useState("");
+  const [cointype, setCoinType] = useState(STRK_ADDR);
+  const {
+    data: tokenAddress,
+    error: points,
+    refetch,
+    fetchStatus,
+    status,
+  } = useReadContract({
+    abi: abi,
+    functionName: "token_address",
+    address: PROTOCOL_ADDRESS,
+    args: [],
+    watch: true,
+  });
   const {
     isError,
     error,
     data,
-    sendAsync: addPoint,
+    sendAsync: donateToFoundation,
     isPending: isAddingLoading,
   } = useSendTransaction({
     calls:
       contract && address
-        ? [contract.populate("add_point_from_weight", [weight])]
+        ? [contract.populate("donate_to_foundation", [cointype, amount])]
+        : undefined,
+  });
+  const {
+    isError: isErrorERC20,
+    error: errorERC20,
+    data: dataERC20,
+    sendAsync: approveToken,
+    isPending: isApprovingLoading,
+  } = useSendTransaction({
+    calls:
+      erc20Contract && address
+        ? [erc20Contract.populate("approve", [tokenAddress, amount])]
         : undefined,
   });
 
@@ -45,24 +80,32 @@ function Main() {
     setState(e.target.value);
   };
   const handleClick = async () => {
-    if (weight === "") {
+    if (amount === "") {
       toast.error("Please fill all fields");
     } else {
       try {
-        setIsAddingPoints(true);
+        console.log({ amount, tokenAddress, cointype });
+        setIsDonating(true);
 
-        const transaction = await addPoint();
-
+        const transactionAppr = await approveToken();
+        if (transactionAppr?.transaction_hash) {
+          console.log(
+            "Transaction submitted:",
+            transactionAppr.transaction_hash
+          );
+        }
+        await account.waitForTransaction(transactionAppr.transaction_hash);
+        const transaction = await donateToFoundation();
         if (transaction?.transaction_hash) {
           console.log("Transaction submitted:", transaction.transaction_hash);
         }
         await account.waitForTransaction(transaction.transaction_hash);
         toast.success("Points added successfully");
-        setWeight("");
+        setAmount("");
       } catch (e) {
         toast.error(e.message);
       } finally {
-        setIsAddingPoints(false);
+        setIsDonating(false);
       }
     }
   };
@@ -108,9 +151,9 @@ function Main() {
                 <div className="intro-x mt-8">
                   <input
                     type="number"
-                    value={weight}
+                    value={amount}
                     step={1}
-                    onChange={handleChange(setWeight)}
+                    onChange={handleChange(setAmount)}
                     className="intro-x login__input form-control py-3 px-4 block"
                     placeholder="$10"
                   />

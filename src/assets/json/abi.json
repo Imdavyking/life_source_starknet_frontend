@@ -13,6 +13,26 @@
     ]
   },
   {
+    "type": "enum",
+    "name": "pragma_lib::types::DataType",
+    "variants": [
+      { "name": "SpotEntry", "type": "core::felt252" },
+      {
+        "name": "FutureEntry",
+        "type": "(core::felt252, core::integer::u64)"
+      },
+      { "name": "GenericEntry", "type": "core::felt252" }
+    ]
+  },
+  {
+    "type": "enum",
+    "name": "core::bool",
+    "variants": [
+      { "name": "False", "type": "()" },
+      { "name": "True", "type": "()" }
+    ]
+  },
+  {
     "type": "interface",
     "name": "life_source::ILifeSourceManager",
     "items": [
@@ -39,11 +59,12 @@
         "name": "get_token_price",
         "inputs": [
           {
-            "name": "token",
+            "name": "oracle_address",
             "type": "core::starknet::contract_address::ContractAddress"
-          }
+          },
+          { "name": "asset", "type": "pragma_lib::types::DataType" }
         ],
-        "outputs": [{ "type": "core::integer::u256" }],
+        "outputs": [{ "type": "(core::integer::u128, core::integer::u32)" }],
         "state_mutability": "view"
       },
       {
@@ -66,6 +87,44 @@
           { "type": "core::starknet::contract_address::ContractAddress" }
         ],
         "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "donate_to_foundation",
+        "inputs": [
+          {
+            "name": "token",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          { "name": "amount_in_usd", "type": "core::integer::u256" }
+        ],
+        "outputs": [{ "type": "core::bool" }],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "withdraw_donation",
+        "inputs": [
+          {
+            "name": "token",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          { "name": "amount", "type": "core::integer::u256" }
+        ],
+        "outputs": [{ "type": "core::bool" }],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "change_admin",
+        "inputs": [
+          {
+            "name": "new_admin",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
       }
     ]
   },
@@ -115,6 +174,44 @@
   },
   {
     "type": "event",
+    "name": "life_source::LifeSourceManager::Donated",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "token",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      },
+      { "name": "amount", "type": "core::integer::u256", "kind": "data" }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "life_source::LifeSourceManager::WithdrawnDonation",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "token",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      },
+      { "name": "amount", "type": "core::integer::u256", "kind": "data" }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "life_source::LifeSourceManager::ChangedAdmin",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "new_admin",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
     "name": "life_source::LifeSourceManager::Event",
     "kind": "enum",
     "variants": [
@@ -126,6 +223,21 @@
       {
         "name": "RedeemCode",
         "type": "life_source::LifeSourceManager::RedeemCode",
+        "kind": "nested"
+      },
+      {
+        "name": "Donated",
+        "type": "life_source::LifeSourceManager::Donated",
+        "kind": "nested"
+      },
+      {
+        "name": "WithdrawnDonation",
+        "type": "life_source::LifeSourceManager::WithdrawnDonation",
+        "kind": "nested"
+      },
+      {
+        "name": "ChangedAdmin",
+        "type": "life_source::LifeSourceManager::ChangedAdmin",
         "kind": "nested"
       }
     ]
