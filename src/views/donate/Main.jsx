@@ -4,7 +4,7 @@ import DarkModeSwitcher from "@/components/dark-mode-switcher/Main";
 import { Link } from "react-router-dom";
 import dom from "@left4code/tw-starter/dist/js/dom";
 import logoUrl from "@/assets/images/logo.png";
-import garbageImage from "@/assets/images/garbage.svg";
+import donateHeart from "@/assets/images/donate-heart.svg";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { FaSpinner } from "react-icons/fa";
@@ -125,7 +125,7 @@ function Main() {
                 <img
                   alt="LifeSource"
                   className="-intro-x w-1/2 -mt-16"
-                  src={garbageImage}
+                  src={donateHeart}
                 />
                 <div className="-intro-x text-white font-medium text-4xl leading-tight mt-10">
                   Donating <br />
