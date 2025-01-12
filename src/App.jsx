@@ -4,7 +4,6 @@ import { RecoilRoot } from "recoil";
 import Router from "./router";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ethers } from "ethers";
 import { createContext, useContext, useState } from "react";
 import { StarknetProvider } from "./components/StarknetProvider";
 
