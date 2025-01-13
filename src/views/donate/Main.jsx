@@ -17,19 +17,20 @@ import {
 import { uint256 } from "starknet";
 import { PROTOCOL_ADDRESS } from "../../utils/constants";
 import abi from "@/assets/json/abi.json";
+import erc20abi from "@/assets/json/erc20.json";
 import { fetchPrice } from "../../utils/fetch-price";
 
 function Main() {
-  const getUint256FromDecimal = (decimalAmount) => {
-    try {
-      const amount = Number(decimalAmount);
-      const multiplied = amount * Math.pow(10, 18);
-      return uint256.bnToUint256(multiplied.toString());
-    } catch (err) {
-      console.log(err);
-      throw new Error("Invalid amount format");
-    }
-  };
+  // const getUint256FromDecimal = (decimalAmount) => {
+  //   try {
+  //     const amount = Number(decimalAmount);
+  //     const multiplied = amount * Math.pow(10, 18);
+  //     return uint256.bnToUint256(multiplied.toString());
+  //   } catch (err) {
+  //     console.log(err);
+  //     throw new Error("Invalid amount format");
+  //   }
+  // };
   useEffect(() => {
     dom("body").removeClass("main").removeClass("error-page").addClass("login");
   }, []);
@@ -45,32 +46,14 @@ function Main() {
   const [amountTokenToDonate, setAmountTokenToDonate] = useState(0);
   const [tokenAddress, setTokenAddress] = useState(STRK_ADDR);
 
-  const { contract } = useContract({
+  const { contract: protocolContract } = useContract({
     abi,
     address: PROTOCOL_ADDRESS,
   });
   const { contract: erc20Contract } = useContract({
-    abi,
+    abi: erc20abi,
     address: tokenAddress,
   });
-
-  // const {
-  //   isError,
-  //   error,
-  //   data,
-  //   sendAsync: donateToFoundation,
-  //   isPending: isAddingLoading,
-  // } = useSendTransaction({
-  //   calls:
-  //     contract && address
-  //       ? [
-  //           contract.populate("donate_to_foundation", [
-  //             tokenAddress,
-  //             amountInUsd,
-  //           ]),
-  //         ]
-  //       : undefined,
-  // });
 
   const handleChange = (setState) => (e) => {
     setState(e.target.value);
@@ -80,27 +63,21 @@ function Main() {
       toast.error("Please fill all fields");
     } else {
       try {
-        const priceInfo = await fetchPrice(STRK_GECKO_ID);
         setIsDonating(true);
+        const priceInfo = await fetchPrice(STRK_GECKO_ID);
+
         const tolerance = 1.03;
-        const amountToDonate = (amountInUsd / priceInfo) * tolerance;
+        const amountToDonate =
+          ((amountInUsd * 10 ** 18) / priceInfo) * tolerance;
 
         setAmountTokenToDonate(amountToDonate);
-        // console.log(getUint256FromDecimal(amountToDonate));
-
-        console.log(erc20Contract);
-
-        const amountUint256 = getUint256FromDecimal(amountToDonate);
-        console.log({
-          cointype: tokenAddress,
-          amountUint256,
-          PROTOCOL_ADDRESS,
-          amountUint256,
-        });
+        console.log(erc20Contract.populate);
         const approvalCall = erc20Contract.populate("approve", [
           PROTOCOL_ADDRESS,
-          amountUint256,
+          amountToDonate,
         ]);
+
+        console.log(account);
 
         const approvalTx = await account.execute(approvalCall);
 
