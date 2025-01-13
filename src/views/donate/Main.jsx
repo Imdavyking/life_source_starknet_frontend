@@ -16,6 +16,7 @@ import {
 } from "@starknet-react/core";
 import { PROTOCOL_ADDRESS } from "../../utils/constants";
 import abi from "@/assets/json/abi.json";
+import { fetchPrice } from "../../utils/fetch-price";
 
 function Main() {
   useEffect(() => {
@@ -23,6 +24,7 @@ function Main() {
   }, []);
   const [isDonating, setIsDonating] = useState(false);
   const { address, account } = useAccount();
+
   const { contract } = useContract({
     abi,
     address: PROTOCOL_ADDRESS,
@@ -36,21 +38,12 @@ function Main() {
     "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";
   const ETH_ADDR =
     "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";
-  const [amount, setAmount] = useState("");
+  const STRK_GECKO_ID = "starknet";
+  const [amountInUsd, setAmountUSDToDonate] = useState("");
+  const [amounTokenToDonate, setAmountTokenToDonate] = useState(0);
+  const [tokenAddress, setTokenAddress] = useState("");
   const [cointype, setCoinType] = useState(STRK_ADDR);
-  const {
-    data: tokenAddress,
-    error: points,
-    refetch,
-    fetchStatus,
-    status,
-  } = useReadContract({
-    abi: abi,
-    functionName: "token_address",
-    address: PROTOCOL_ADDRESS,
-    args: [],
-    watch: true,
-  });
+
   const {
     isError,
     error,
@@ -60,7 +53,7 @@ function Main() {
   } = useSendTransaction({
     calls:
       contract && address
-        ? [contract.populate("donate_to_foundation", [cointype, amount])]
+        ? [contract.populate("donate_to_foundation", [cointype, amountInUsd])]
         : undefined,
   });
   const {
@@ -72,7 +65,12 @@ function Main() {
   } = useSendTransaction({
     calls:
       erc20Contract && address
-        ? [erc20Contract.populate("approve", [tokenAddress, amount])]
+        ? [
+            erc20Contract.populate("approve", [
+              tokenAddress,
+              amounTokenToDonate,
+            ]),
+          ]
         : undefined,
   });
 
@@ -80,13 +78,27 @@ function Main() {
     setState(e.target.value);
   };
   const handleClick = async () => {
-    if (amount === "") {
+    if (amountInUsd === "") {
       toast.error("Please fill all fields");
     } else {
       try {
-        console.log({ amount, tokenAddress, cointype });
+        let tokenAdr = (
+          await account.callContract({
+            contractAddress: PROTOCOL_ADDRESS,
+            entrypoint: "token_address",
+          })
+        )[0].toString(16);
+        setTokenAddress(tokenAdr);
+        const priceInfo = await fetchPrice(STRK_GECKO_ID);
         setIsDonating(true);
-
+        let amountToDonate = (amountInUsd / priceInfo) * 10 ** 18;
+        // add 3% tolerance
+        amountToDonate = amountToDonate * 1.03;
+        console.log({
+          amounTokenToDonate,
+          tokenAddress,
+        });
+        setAmountTokenToDonate(amountToDonate);
         const transactionAppr = await approveToken();
         if (transactionAppr?.transaction_hash) {
           console.log(
@@ -101,8 +113,9 @@ function Main() {
         }
         await account.waitForTransaction(transaction.transaction_hash);
         toast.success("Points added successfully");
-        setAmount("");
+        setAmountUSDToDonate("");
       } catch (e) {
+        console.log(e);
         toast.error(e.message);
       } finally {
         setIsDonating(false);
@@ -151,9 +164,9 @@ function Main() {
                 <div className="intro-x mt-8">
                   <input
                     type="number"
-                    value={amount}
+                    value={amountInUsd}
                     step={1}
-                    onChange={handleChange(setAmount)}
+                    onChange={handleChange(setAmountUSDToDonate)}
                     className="intro-x login__input form-control py-3 px-4 block"
                     placeholder="$10"
                   />
