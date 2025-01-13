@@ -79,12 +79,7 @@ function Main() {
         const approvalTx = await account.execute(approvalCall);
 
         await account.waitForTransaction(approvalTx.transaction_hash);
-        if (transactionAppr?.transaction_hash) {
-          console.log(
-            "Transaction submitted:",
-            transactionAppr.transaction_hash
-          );
-        }
+
         const donateToFoundation = protocolContract.populate(
           "donate_to_foundation",
           [tokenAddress, amountInUsd]
