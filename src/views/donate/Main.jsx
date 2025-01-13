@@ -14,25 +14,27 @@ import {
   useSendTransaction,
   useReadContract,
 } from "@starknet-react/core";
+import { uint256 } from "starknet";
 import { PROTOCOL_ADDRESS } from "../../utils/constants";
 import abi from "@/assets/json/abi.json";
 import { fetchPrice } from "../../utils/fetch-price";
 
 function Main() {
+  const getUint256FromDecimal = (decimalAmount) => {
+    try {
+      const amount = Number(decimalAmount);
+      const multiplied = amount * Math.pow(10, 18);
+      return uint256.bnToUint256(multiplied.toString());
+    } catch (err) {
+      console.log(err);
+      throw new Error("Invalid amount format");
+    }
+  };
   useEffect(() => {
     dom("body").removeClass("main").removeClass("error-page").addClass("login");
   }, []);
   const [isDonating, setIsDonating] = useState(false);
   const { address, account } = useAccount();
-
-  const { contract } = useContract({
-    abi,
-    address: PROTOCOL_ADDRESS,
-  });
-  const { erc20Contract } = useContract({
-    abi,
-    address: PROTOCOL_ADDRESS,
-  });
 
   const STRK_ADDR =
     "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";
@@ -42,6 +44,15 @@ function Main() {
   const [amountInUsd, setAmountUSDToDonate] = useState("");
   const [amountTokenToDonate, setAmountTokenToDonate] = useState(0);
   const [cointype, setCoinType] = useState(STRK_ADDR);
+
+  const { contract } = useContract({
+    abi,
+    address: PROTOCOL_ADDRESS,
+  });
+  const { contract: erc20Contract } = useContract({
+    abi,
+    address: cointype,
+  });
 
   const {
     isError,
@@ -55,18 +66,6 @@ function Main() {
         ? [contract.populate("donate_to_foundation", [cointype, amountInUsd])]
         : undefined,
   });
-  const {
-    isError: isErrorERC20,
-    error: errorERC20,
-    data: dataERC20,
-    sendAsync: approveToken,
-    isPending: isApprovingLoading,
-  } = useSendTransaction({
-    calls:
-      erc20Contract && address
-        ? [erc20Contract.populate("approve", [cointype, amountTokenToDonate])]
-        : undefined,
-  });
 
   const handleChange = (setState) => (e) => {
     setState(e.target.value);
@@ -78,15 +77,29 @@ function Main() {
       try {
         const priceInfo = await fetchPrice(STRK_GECKO_ID);
         setIsDonating(true);
-        let amountToDonate = (amountInUsd / priceInfo) * 10 ** 18;
-        // add 3% tolerance
-        amountToDonate = amountToDonate * 1.03;
+        const tolerance = 1.03;
+        const amountToDonate = (amountInUsd / priceInfo) * tolerance;
+
+        setAmountTokenToDonate(amountToDonate);
+        // console.log(getUint256FromDecimal(amountToDonate));
+
+        console.log(erc20Contract);
+
+        const amountUint256 = getUint256FromDecimal(amountToDonate);
         console.log({
           cointype,
-          amountToDonate,
+          amountUint256,
+          PROTOCOL_ADDRESS,
+          amountUint256,
         });
-        setAmountTokenToDonate(amountToDonate);
-        // const transactionAppr = await approveToken();
+        const approvalCall = erc20Contract.populate("approve", [
+          PROTOCOL_ADDRESS,
+          amountUint256,
+        ]);
+
+        const approvalTx = await account.execute(approvalCall);
+
+        await account.waitForTransaction(approvalTx.transaction_hash);
         // if (transactionAppr?.transaction_hash) {
         //   console.log(
         //     "Transaction submitted:",
@@ -94,13 +107,13 @@ function Main() {
         //   );
         // }
         // await account.waitForTransaction(transactionAppr.transaction_hash);
-        const transaction = await donateToFoundation();
-        if (transaction?.transaction_hash) {
-          console.log("Transaction submitted:", transaction.transaction_hash);
-        }
-        await account.waitForTransaction(transaction.transaction_hash);
-        toast.success("Points added successfully");
-        setAmountUSDToDonate("");
+        // const transaction = await donateToFoundation();
+        // if (transaction?.transaction_hash) {
+        //   console.log("Transaction submitted:", transaction.transaction_hash);
+        // }
+        // await account.waitForTransaction(transaction.transaction_hash);
+        // toast.success("Donated successfully");
+        // setAmountUSDToDonate("");
       } catch (e) {
         console.log(e);
         toast.error(e.message);
