@@ -43,7 +43,7 @@ function Main() {
   const STRK_GECKO_ID = "starknet";
   const [amountInUsd, setAmountUSDToDonate] = useState("");
   const [amountTokenToDonate, setAmountTokenToDonate] = useState(0);
-  const [cointype, setCoinType] = useState(STRK_ADDR);
+  const [tokenAddress, setTokenAddress] = useState(STRK_ADDR);
 
   const { contract } = useContract({
     abi,
@@ -51,7 +51,7 @@ function Main() {
   });
   const { contract: erc20Contract } = useContract({
     abi,
-    address: cointype,
+    address: tokenAddress,
   });
 
   const {
@@ -63,7 +63,12 @@ function Main() {
   } = useSendTransaction({
     calls:
       contract && address
-        ? [contract.populate("donate_to_foundation", [cointype, amountInUsd])]
+        ? [
+            contract.populate("donate_to_foundation", [
+              tokenAddress,
+              amountInUsd,
+            ]),
+          ]
         : undefined,
   });
 
@@ -87,7 +92,7 @@ function Main() {
 
         const amountUint256 = getUint256FromDecimal(amountToDonate);
         console.log({
-          cointype,
+          cointype: tokenAddress,
           amountUint256,
           PROTOCOL_ADDRESS,
           amountUint256,
