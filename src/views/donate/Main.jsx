@@ -35,13 +35,12 @@ function Main() {
   });
 
   const STRK_ADDR =
-    "0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";
+    "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";
   const ETH_ADDR =
     "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";
   const STRK_GECKO_ID = "starknet";
   const [amountInUsd, setAmountUSDToDonate] = useState("");
-  const [amounTokenToDonate, setAmountTokenToDonate] = useState(0);
-  const [tokenAddress, setTokenAddress] = useState("");
+  const [amountTokenToDonate, setAmountTokenToDonate] = useState(0);
   const [cointype, setCoinType] = useState(STRK_ADDR);
 
   const {
@@ -65,12 +64,7 @@ function Main() {
   } = useSendTransaction({
     calls:
       erc20Contract && address
-        ? [
-            erc20Contract.populate("approve", [
-              tokenAddress,
-              amounTokenToDonate,
-            ]),
-          ]
+        ? [erc20Contract.populate("approve", [cointype, amountTokenToDonate])]
         : undefined,
   });
 
@@ -82,31 +76,24 @@ function Main() {
       toast.error("Please fill all fields");
     } else {
       try {
-        let tokenAdr = (
-          await account.callContract({
-            contractAddress: PROTOCOL_ADDRESS,
-            entrypoint: "token_address",
-          })
-        )[0].toString(16);
-        setTokenAddress(tokenAdr);
         const priceInfo = await fetchPrice(STRK_GECKO_ID);
         setIsDonating(true);
         let amountToDonate = (amountInUsd / priceInfo) * 10 ** 18;
         // add 3% tolerance
         amountToDonate = amountToDonate * 1.03;
         console.log({
-          amounTokenToDonate,
-          tokenAddress,
+          cointype,
+          amountToDonate,
         });
         setAmountTokenToDonate(amountToDonate);
-        const transactionAppr = await approveToken();
-        if (transactionAppr?.transaction_hash) {
-          console.log(
-            "Transaction submitted:",
-            transactionAppr.transaction_hash
-          );
-        }
-        await account.waitForTransaction(transactionAppr.transaction_hash);
+        // const transactionAppr = await approveToken();
+        // if (transactionAppr?.transaction_hash) {
+        //   console.log(
+        //     "Transaction submitted:",
+        //     transactionAppr.transaction_hash
+        //   );
+        // }
+        // await account.waitForTransaction(transactionAppr.transaction_hash);
         const transaction = await donateToFoundation();
         if (transaction?.transaction_hash) {
           console.log("Transaction submitted:", transaction.transaction_hash);
