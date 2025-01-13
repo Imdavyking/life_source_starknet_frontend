@@ -54,23 +54,23 @@ function Main() {
     address: tokenAddress,
   });
 
-  const {
-    isError,
-    error,
-    data,
-    sendAsync: donateToFoundation,
-    isPending: isAddingLoading,
-  } = useSendTransaction({
-    calls:
-      contract && address
-        ? [
-            contract.populate("donate_to_foundation", [
-              tokenAddress,
-              amountInUsd,
-            ]),
-          ]
-        : undefined,
-  });
+  // const {
+  //   isError,
+  //   error,
+  //   data,
+  //   sendAsync: donateToFoundation,
+  //   isPending: isAddingLoading,
+  // } = useSendTransaction({
+  //   calls:
+  //     contract && address
+  //       ? [
+  //           contract.populate("donate_to_foundation", [
+  //             tokenAddress,
+  //             amountInUsd,
+  //           ]),
+  //         ]
+  //       : undefined,
+  // });
 
   const handleChange = (setState) => (e) => {
     setState(e.target.value);
