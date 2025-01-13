@@ -71,31 +71,29 @@ function Main() {
           ((amountInUsd * 10 ** 18) / priceInfo) * tolerance;
 
         setAmountTokenToDonate(amountToDonate);
-        console.log(erc20Contract.populate);
         const approvalCall = erc20Contract.populate("approve", [
           PROTOCOL_ADDRESS,
           amountToDonate,
         ]);
 
-        console.log(account);
-
         const approvalTx = await account.execute(approvalCall);
 
         await account.waitForTransaction(approvalTx.transaction_hash);
-        // if (transactionAppr?.transaction_hash) {
-        //   console.log(
-        //     "Transaction submitted:",
-        //     transactionAppr.transaction_hash
-        //   );
-        // }
-        // await account.waitForTransaction(transactionAppr.transaction_hash);
-        // const transaction = await donateToFoundation();
-        // if (transaction?.transaction_hash) {
-        //   console.log("Transaction submitted:", transaction.transaction_hash);
-        // }
-        // await account.waitForTransaction(transaction.transaction_hash);
-        // toast.success("Donated successfully");
-        // setAmountUSDToDonate("");
+        if (transactionAppr?.transaction_hash) {
+          console.log(
+            "Transaction submitted:",
+            transactionAppr.transaction_hash
+          );
+        }
+        const donateToFoundation = protocolContract.populate(
+          "donate_to_foundation",
+          [tokenAddress, amountInUsd]
+        );
+        const donateTx = await account.execute(donateToFoundation);
+
+        await account.waitForTransaction(donateTx.transaction_hash);
+        toast.success("Donated successfully");
+        setAmountUSDToDonate("");
       } catch (e) {
         console.log(e);
         toast.error(e.message);
