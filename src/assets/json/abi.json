@@ -116,6 +116,18 @@
       },
       {
         "type": "function",
+        "name": "get_donation",
+        "inputs": [
+          {
+            "name": "token",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [{ "type": "core::integer::u256" }],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
         "name": "change_admin",
         "inputs": [
           {

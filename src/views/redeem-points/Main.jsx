@@ -76,7 +76,6 @@ function Main() {
         setPoints("");
         await refetch();
       } catch (e) {
-        console.log("eeeee");
         toast.error(e);
       } finally {
         setIsRedeeming(false);

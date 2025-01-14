@@ -14,9 +14,6 @@ const Home = () => {
   const { address, status } = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
-  // const { data: profile } = useStarkProfile({ address });
-
-  console.log(address);
 
   const connector = connectors.filter(
     (connector) => connector.name == "Argent X" && connector.available()

@@ -21,16 +21,6 @@ import erc20abi from "@/assets/json/erc20.json";
 import { fetchPrice } from "../../utils/fetch-price";
 
 function Main() {
-  // const getUint256FromDecimal = (decimalAmount) => {
-  //   try {
-  //     const amount = Number(decimalAmount);
-  //     const multiplied = amount * Math.pow(10, 18);
-  //     return uint256.bnToUint256(multiplied.toString());
-  //   } catch (err) {
-  //     console.log(err);
-  //     throw new Error("Invalid amount format");
-  //   }
-  // };
   useEffect(() => {
     dom("body").removeClass("main").removeClass("error-page").addClass("login");
   }, []);
@@ -45,6 +35,8 @@ function Main() {
   const [amountInUsd, setAmountUSDToDonate] = useState("");
   const [amountTokenToDonate, setAmountTokenToDonate] = useState(0);
   const [tokenAddress, setTokenAddress] = useState(STRK_ADDR);
+
+  console.log(PROTOCOL_ADDRESS);
 
   const { contract: protocolContract } = useContract({
     abi,
@@ -82,7 +74,7 @@ function Main() {
         toast.info("Approved successfully");
         const donateToFoundation = protocolContract.populate(
           "donate_to_foundation",
-          [tokenAddress, amountInUsd]
+          [tokenAddress, amountToDonate / tolerance]
         );
         const donateTx = await account.execute(donateToFoundation);
 
