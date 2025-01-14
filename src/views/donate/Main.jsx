@@ -18,7 +18,6 @@ import { uint256 } from "starknet";
 import { PROTOCOL_ADDRESS } from "../../utils/constants";
 import abi from "@/assets/json/abi.json";
 import erc20abi from "@/assets/json/erc20.json";
-import { fetchPrice } from "../../utils/fetch-price";
 
 function Main() {
   useEffect(() => {
@@ -55,31 +54,39 @@ function Main() {
     } else {
       try {
         setIsDonating(true);
-        const priceInfo = await fetchPrice(STRK_GECKO_ID);
 
-        const tolerance = 1.03;
-
-        console.log({ amount: (amountInUsd * 10 ** 18) / priceInfo });
-        const amountToDonate = (amountInUsd * 10 ** 18) / priceInfo;
-
-        const approvalCall = erc20Contract.populate("approve", [
-          PROTOCOL_ADDRESS,
-          amountToDonate,
-        ]);
-
-        const approvalTx = await account.execute(approvalCall);
-
-        await account.waitForTransaction(approvalTx.transaction_hash);
-        toast.info("Approved successfully");
-        const donateToFoundation = protocolContract.populate(
-          "donate_to_foundation",
+        const getUsdToTokenPriceCall = protocolContract.populate(
+          "get_usd_to_token_price",
           [tokenAddress, amountInUsd]
         );
-        const donateTx = await account.execute(donateToFoundation);
+        const priceData = await account.callContract(getUsdToTokenPriceCall);
+        console.log({ priceData });
+        // const priceInfo = await fetchPrice(STRK_GECKO_ID);
 
-        await account.waitForTransaction(donateTx.transaction_hash);
-        toast.success("Donated successfully");
-        setAmountUSDToDonate("");
+        // const tolerance = 1.03;
+
+        // console.log({ amount: (amountInUsd * 10 ** 18) / priceInfo });
+        // const amountToDonate = (amountInUsd * 10 ** 18) / priceInfo;
+
+        // const approvalCall = erc20Contract.populate("approve", [
+        //   PROTOCOL_ADDRESS,
+        //   amountToDonate,
+        // ]);
+
+        // const approvalTx = await account.execute(approvalCall);
+
+        // await account.waitForTransaction(approvalTx.transaction_hash);
+        // toast.info("Approved successfully");
+
+        // const donateToFoundation = protocolContract.populate(
+        //   "donate_to_foundation",
+        //   [tokenAddress, amountInUsd]
+        // );
+        // const donateTx = await account.execute(donateToFoundation);
+
+        // await account.waitForTransaction(donateTx.transaction_hash);
+        // toast.success("Donated successfully");
+        // setAmountUSDToDonate("");
       } catch (e) {
         console.log(e);
         toast.error(e.message);

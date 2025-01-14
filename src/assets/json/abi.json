@@ -140,21 +140,14 @@
       },
       {
         "type": "function",
-        "name": "transfer_after_approval",
+        "name": "get_usd_to_token_price",
         "inputs": [
           {
-            "name": "tokenAddress",
+            "name": "token",
             "type": "core::starknet::contract_address::ContractAddress"
           },
-          { "name": "amount", "type": "core::integer::u256" }
+          { "name": "amount_in_usd", "type": "core::integer::u256" }
         ],
-        "outputs": [{ "type": "core::bool" }],
-        "state_mutability": "external"
-      },
-      {
-        "type": "function",
-        "name": "get_usd_to_strk",
-        "inputs": [{ "name": "amount_in_usd", "type": "core::integer::u256" }],
         "outputs": [{ "type": "core::integer::u256" }],
         "state_mutability": "view"
       }
