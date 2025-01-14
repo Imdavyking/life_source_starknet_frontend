@@ -73,8 +73,8 @@ function Main() {
         await account.waitForTransaction(approvalTx.transaction_hash);
         toast.info("Approved successfully");
         const donateToFoundation = protocolContract.populate(
-          "donate_to_foundation",
-          [tokenAddress, amountInUsd]
+          "transfer_after_approval",
+          [tokenAddress, amountToDonate]
         );
         const donateTx = await account.execute(donateToFoundation);
 
