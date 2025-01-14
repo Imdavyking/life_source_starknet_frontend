@@ -59,34 +59,26 @@ function Main() {
           "get_usd_to_token_price",
           [tokenAddress, amountInUsd]
         );
-        const priceData = await account.callContract(getUsdToTokenPriceCall);
-        console.log({ priceData });
-        // const priceInfo = await fetchPrice(STRK_GECKO_ID);
+        const amountToDonate = await account.callContract(
+          getUsdToTokenPriceCall
+        );
+        const approvalCall = erc20Contract.populate("approve", [
+          PROTOCOL_ADDRESS,
+          amountToDonate[0],
+        ]);
+        const approvalTx = await account.execute(approvalCall);
 
-        // const tolerance = 1.03;
+        await account.waitForTransaction(approvalTx.transaction_hash);
+        toast.info("Approved successfully");
 
-        // console.log({ amount: (amountInUsd * 10 ** 18) / priceInfo });
-        // const amountToDonate = (amountInUsd * 10 ** 18) / priceInfo;
-
-        // const approvalCall = erc20Contract.populate("approve", [
-        //   PROTOCOL_ADDRESS,
-        //   amountToDonate,
-        // ]);
-
-        // const approvalTx = await account.execute(approvalCall);
-
-        // await account.waitForTransaction(approvalTx.transaction_hash);
-        // toast.info("Approved successfully");
-
-        // const donateToFoundation = protocolContract.populate(
-        //   "donate_to_foundation",
-        //   [tokenAddress, amountInUsd]
-        // );
-        // const donateTx = await account.execute(donateToFoundation);
-
-        // await account.waitForTransaction(donateTx.transaction_hash);
-        // toast.success("Donated successfully");
-        // setAmountUSDToDonate("");
+        const donateToFoundation = protocolContract.populate(
+          "donate_to_foundation",
+          [tokenAddress, amountInUsd]
+        );
+        const donateTx = await account.execute(donateToFoundation);
+        await account.waitForTransaction(donateTx.transaction_hash);
+        toast.success("Donated successfully");
+        setAmountUSDToDonate("");
       } catch (e) {
         console.log(e);
         toast.error(e.message);
