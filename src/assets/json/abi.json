@@ -137,6 +137,19 @@
         ],
         "outputs": [],
         "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "transfer_after_approval",
+        "inputs": [
+          {
+            "name": "tokenAddress",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          { "name": "amount", "type": "core::integer::u256" }
+        ],
+        "outputs": [{ "type": "core::bool" }],
+        "state_mutability": "external"
       }
     ]
   },
