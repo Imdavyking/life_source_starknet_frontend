@@ -74,7 +74,7 @@ function Main() {
         toast.info("Approved successfully");
         const donateToFoundation = protocolContract.populate(
           "donate_to_foundation",
-          [tokenAddress, amountToDonate / tolerance]
+          [tokenAddress, amountInUsd]
         );
         const donateTx = await account.execute(donateToFoundation);
 
