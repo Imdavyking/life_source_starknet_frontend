@@ -33,7 +33,6 @@ function Main() {
     "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";
   const STRK_GECKO_ID = "starknet";
   const [amountInUsd, setAmountUSDToDonate] = useState("");
-  const [amountTokenToDonate, setAmountTokenToDonate] = useState(0);
   const [tokenAddress, setTokenAddress] = useState(STRK_ADDR);
 
   console.log(PROTOCOL_ADDRESS);
@@ -59,10 +58,10 @@ function Main() {
         const priceInfo = await fetchPrice(STRK_GECKO_ID);
 
         const tolerance = 1.03;
-        const amountToDonate =
-          ((amountInUsd * 10 ** 18) / priceInfo) * tolerance;
 
-        setAmountTokenToDonate(amountToDonate);
+        console.log({ amount: (amountInUsd * 10 ** 18) / priceInfo });
+        const amountToDonate = (amountInUsd * 10 ** 18) / priceInfo;
+
         const approvalCall = erc20Contract.populate("approve", [
           PROTOCOL_ADDRESS,
           amountToDonate,
@@ -74,7 +73,7 @@ function Main() {
         toast.info("Approved successfully");
         const donateToFoundation = protocolContract.populate(
           "transfer_after_approval",
-          [tokenAddress, amountToDonate / 1.03]
+          [tokenAddress, amountToDonate]
         );
         const donateTx = await account.execute(donateToFoundation);
 
