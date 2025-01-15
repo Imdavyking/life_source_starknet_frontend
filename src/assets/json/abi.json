@@ -103,6 +103,19 @@
       },
       {
         "type": "function",
+        "name": "get_usd_to_token_price",
+        "inputs": [
+          {
+            "name": "token",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          { "name": "amount_in_usd", "type": "core::integer::u256" }
+        ],
+        "outputs": [{ "type": "core::integer::u256" }],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
         "name": "withdraw_donation",
         "inputs": [
           {
@@ -140,15 +153,11 @@
       },
       {
         "type": "function",
-        "name": "get_usd_to_token_price",
-        "inputs": [
-          {
-            "name": "token",
-            "type": "core::starknet::contract_address::ContractAddress"
-          },
-          { "name": "amount_in_usd", "type": "core::integer::u256" }
+        "name": "get_admin",
+        "inputs": [],
+        "outputs": [
+          { "type": "core::starknet::contract_address::ContractAddress" }
         ],
-        "outputs": [{ "type": "core::integer::u256" }],
         "state_mutability": "view"
       }
     ]
