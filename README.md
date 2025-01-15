@@ -40,4 +40,16 @@ Run:
 yarn dev
 ```
 
+Run (with docker):
+
+```
+docker compose up --build
+```
+
+Stop (with docker)
+
+```
+docker compose down
+```
+
 # Thank you!
