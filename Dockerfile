@@ -29,4 +29,4 @@ COPY . .
 EXPOSE 3000
 
 # Run the application.
-CMD npm yarn dev --host
+CMD yarn dev --host
