@@ -1,36 +1,37 @@
-FROM node:20-alpine
+# syntax=docker/dockerfile:1
 
-WORKDIR /app
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Dockerfile reference guide at
+# https://docs.docker.com/go/dockerfile-reference/
 
-COPY package*.json ./
+# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
-# Install dependencies using yarn
-RUN yarn install
+ARG NODE_VERSION=18.0.0
 
-COPY . /app
+FROM node:${NODE_VERSION}-alpine
 
+# Use production node environment by default.
+ENV NODE_ENV production
+
+WORKDIR /usr/src/app
+
+# Download dependencies as a separate step to take advantage of Docker's caching.
+# Leverage a cache mount to /root/.npm to speed up subsequent builds.
+# Leverage a bind mounts to package.json and package-lock.json to avoid having to copy them into
+# into this layer.
+RUN --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=package-lock.json,target=package-lock.json \
+    --mount=type=cache,target=/root/.npm \
+    npm ci --omit=dev
+
+# Run the application as a non-root user.
+USER node
+
+# Copy the rest of the source files into the image.
+COPY . .
+
+# Expose the port that the application listens on.
 EXPOSE 3000
 
-# Use yarn to run the development server
-CMD ["yarn", "dev", "--host"]
-
-# # Use an official Node.js image as the base
-# FROM node:20-alpine
-
-# # Set the working directory inside the container
-# WORKDIR /app
-
-# # Copy package.json and package-lock.json to the container
-# COPY package*.json ./
-
-# # Install the dependencies
-# RUN npm install
-
-# # Copy the rest of the application code to the container
-# COPY . .
-
-# # Expose the application's port
-# EXPOSE 5000
-
-# # Start the Node.js application
-# CMD ["npm","run", "listen"]
+# Start the Node.js application
+CMD ["npm","run", "dev","--host"]
