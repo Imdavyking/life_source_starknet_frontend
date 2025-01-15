@@ -34,8 +34,6 @@ function Main() {
   const [amountInUsd, setAmountUSDToDonate] = useState("");
   const [tokenAddress, setTokenAddress] = useState(STRK_ADDR);
 
-  console.log(PROTOCOL_ADDRESS);
-
   const { contract: protocolContract } = useContract({
     abi,
     address: PROTOCOL_ADDRESS,
