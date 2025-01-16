@@ -297,10 +297,3 @@ export class LifeSourceAgent {
     return results;
   }
 }
-
-// let agent = new LifeSourceAgent();
-// await agent.solveTask(`
-//   add 150 grams
-//   `);
-// console.log(agent);
-// return;
