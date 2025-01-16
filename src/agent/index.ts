@@ -71,6 +71,22 @@ export class LifeSourceAgent {
     await account?.waitForTransaction(donateTx.transaction_hash);
     return donateTx;
   }
+  async redeemCode(points: number | string) {
+    let { contract: protocolContract, account } = await this.protocolContract();
+    const redeemCode = protocolContract.populate("redeem_code", [points]);
+    const redeemTx = await account!.execute(redeemCode);
+    await account?.waitForTransaction(redeemTx.transaction_hash);
+    return redeemTx;
+  }
+  async addPoints(weight: number | string) {
+    let { contract: protocolContract, account } = await this.protocolContract();
+    const addPoints = protocolContract.populate("add_point_from_weight", [
+      weight,
+    ]);
+    const addPointsTx = await account!.execute(addPoints);
+    await account?.waitForTransaction(addPointsTx.transaction_hash);
+    return addPointsTx;
+  }
 
   async approve(tokenAddress: string, amount: number | string) {
     let { contract: erc20Contract, account } = await this.erc20Contract(
@@ -93,19 +109,6 @@ export class LifeSourceAgent {
     // });
     const response = "";
     return response;
-  }
-  private searchDocs(query: string): string | undefined | null {
-    const docs: { [key: string]: string } = {
-      pricing: "Basic Plan: $10/month\nPro plan: $20/month",
-      features: "Features: AI chat,file storage, API access",
-    };
-    return docs[query] as any;
-  }
-  private calculate(expression: string): number {
-    return eval(expression);
-  }
-  private writeFile(text: string) {
-    return `Successfully wrote: ${text}`;
   }
   /**
    * Decide the next action to be taken by the agent
