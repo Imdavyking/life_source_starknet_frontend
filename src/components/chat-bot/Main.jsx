@@ -42,7 +42,7 @@ const ChatWithAdminBot = () => {
 
   return (
     <div>
-      <div className="fixed bottom-32 right-0 mb-4 mr-10">
+      <div className="fixed bottom-24 right-0 mb-4 mr-10">
         <button
           onClick={toggleChatbox}
           className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 flex items-center"
@@ -66,7 +66,7 @@ const ChatWithAdminBot = () => {
       </div>
 
       {isChatboxOpen && (
-        <div className="fixed bottom-32 right-4 w-96">
+        <div className="fixed bottom-24 right-4 w-96">
           <div className="bg-white shadow-md rounded-lg max-w-lg w-full">
             <div className="p-4 border-b bg-blue-500 text-white rounded-t-lg flex justify-between items-center">
               <p className="text-lg font-semibold">AI Agent</p>
