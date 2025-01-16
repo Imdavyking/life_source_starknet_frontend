@@ -53,9 +53,11 @@ function Main() {
       try {
         setIsDonating(true);
 
+        const amountInUsdWithDecimals = Math.trunc(amountInUsd * 10 ** 2);
+
         const getUsdToTokenPriceCall = protocolContract.populate(
           "get_usd_to_token_price",
-          [tokenAddress, amountInUsd]
+          [tokenAddress, amountInUsdWithDecimals]
         );
         const amountToDonate = await account.callContract(
           getUsdToTokenPriceCall
@@ -71,7 +73,7 @@ function Main() {
 
         const donateToFoundation = protocolContract.populate(
           "donate_to_foundation",
-          [tokenAddress, amountInUsd]
+          [tokenAddress, amountInUsdWithDecimals]
         );
         const donateTx = await account.execute(donateToFoundation);
         await account.waitForTransaction(donateTx.transaction_hash);
