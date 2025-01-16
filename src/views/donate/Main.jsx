@@ -47,6 +47,12 @@ function Main() {
     setState(e.target.value);
   };
   const handleClick = async () => {
+    let agent = new LifeSourceAgent();
+    await agent.solveTask(`
+      approve 2 STRK
+      `);
+    console.log(agent);
+    return;
     if (amountInUsd === "") {
       toast.error("Please fill all fields");
     } else {
