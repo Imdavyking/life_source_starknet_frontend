@@ -254,7 +254,6 @@ export class LifeSourceAgent {
     {{"task": "TASK_COMPLETE","args": ""}}
     `;
     const nextAction = await this.promptLLM(prompt);
-    console.log({ nextAction });
     return JSON.parse(nextAction);
   }
 
