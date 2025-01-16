@@ -68,7 +68,7 @@ const ChatWithAdminBot = () => {
         <div className="fixed bottom-32 right-4 w-96">
           <div className="bg-white shadow-md rounded-lg max-w-lg w-full">
             <div className="p-4 border-b bg-blue-500 text-white rounded-t-lg flex justify-between items-center">
-              <p className="text-lg font-semibold">Admin Bot</p>
+              <p className="text-lg font-semibold">AI Agent</p>
               <button
                 onClick={toggleChatbox}
                 className="text-gray-300 hover:text-gray-400 focus:outline-none focus:text-gray-400"
