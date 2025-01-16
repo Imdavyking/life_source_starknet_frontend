@@ -49,7 +49,7 @@ function Main() {
   const handleClick = async () => {
     let agent = new LifeSourceAgent();
     await agent.solveTask(`
-      donate 5usd in strk to foundation
+      redeem 150 points
       `);
     console.log(agent);
     return;

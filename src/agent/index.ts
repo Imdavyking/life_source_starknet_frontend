@@ -144,6 +144,7 @@ export class LifeSourceAgent {
     tokenAddress: string;
     amountInUsd: number | string;
   }) {
+    console.log({ tokenAddress, amountInUsd });
     let { contract: protocolContract, account } = await this.protocolContract();
     const donateCall = protocolContract.populate("donate_to_foundation", [
       tokenAddress,
@@ -272,9 +273,6 @@ export class LifeSourceAgent {
       for (const key in context) {
         args = args.replace(`{{${key}}}`, context[key].toString());
       }
-    } else if (typeof args == "object") {
-      // check if type is map convert it to array
-      args = Object.values(args);
     }
     return tool(args);
   }
