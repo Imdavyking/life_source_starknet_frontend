@@ -17,7 +17,6 @@ import { uint256 } from "starknet";
 import { PROTOCOL_ADDRESS } from "../utils/constants";
 import abi from "@/assets/json/abi.json";
 import erc20abi from "@/assets/json/erc20.json";
-import { connect } from "@argent/get-starknet";
 import { Contract } from "starknet";
 import { getStarknet } from "get-starknet";
 

@@ -8,7 +8,6 @@
     "start": "serve -s dist"
   },
   "dependencies": {
-    "@argent/get-starknet": "^6.4.7",
     "@ckeditor/ckeditor5-build-balloon": "^29.1.0",
     "@ckeditor/ckeditor5-build-balloon-block": "^29.1.0",
     "@ckeditor/ckeditor5-build-classic": "^29.1.0",
@@ -35,6 +34,7 @@
     "dropzone": "^5.7.6",
     "flowbite": "^1.6.5",
     "flowbite-react": "^0.4.6",
+    "get-starknet": "^1.5.0",
     "highlight.js": "^10.6.0",
     "js-beautify": "^1.13.5",
     "litepicker": "^2.0.11",
@@ -63,7 +63,6 @@
     "tom-select": "^1.7.5",
     "xlsx": "^0.16.9",
     "yup": "^0.32.11",
-    "get-starknet": "^1.5.0",
     "zoom-vanilla.js": "^2.0.6"
   },
   "devDependencies": {
