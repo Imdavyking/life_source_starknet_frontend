@@ -83,7 +83,7 @@ export class LifeSourceAgent {
       approve:
         "arguments: tokenAddress (string), amount (number or string); approves the protocol to spend the specified amount",
       donate:
-        "arguments: tokenAddress (string), amountInUsd (number or string); donates the specified USD value in tokens to the foundation",
+        "arguments: tokenAddress (string), amountInUsd (number or string); donates the specified USD value in tokens to the foundation, call get_usd_to_token_price to get the amount of tokens in STARKNET, approve it and then call donate",
       redeemCode:
         "arguments: points (number or string); redeems points for a code",
       addPoints:

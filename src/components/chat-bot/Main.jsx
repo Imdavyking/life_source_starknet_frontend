@@ -129,6 +129,22 @@ const ChatWithAdminBot = () => {
               </button>
             </div>
           </div>
+
+          <div className="bg-gray-100 shadow-md rounded-lg mt-4 p-4">
+            <h3 className="text-lg font-semibold text-gray-700">Commands</h3>
+            <ul className="list-disc ml-5 mt-2 text-gray-600">
+              <li>
+                <strong>donate:</strong> Make a donation in USD (paid using
+                StarkNet's native token).
+              </li>
+              <li>
+                <strong>add points:</strong> Add points to your account.
+              </li>
+              <li>
+                <strong>redeem points:</strong> Redeem points for rewards.
+              </li>
+            </ul>
+          </div>
         </div>
       )}
     </div>
