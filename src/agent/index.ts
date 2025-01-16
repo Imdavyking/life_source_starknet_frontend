@@ -1,7 +1,30 @@
-class LifeSourceAgent {
+/** @format */
+
+import DarkModeSwitcher from "@/components/dark-mode-switcher/Main";
+import { Link } from "react-router-dom";
+import logoUrl from "@/assets/images/logo.png";
+import donateHeart from "@/assets/images/donate-heart.svg";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { FaSpinner } from "react-icons/fa";
+import {
+  useAccount,
+  useContract,
+  useSendTransaction,
+  useReadContract,
+} from "@starknet-react/core";
+import { uint256 } from "starknet";
+import { PROTOCOL_ADDRESS } from "../utils/constants";
+import abi from "@/assets/json/abi.json";
+import erc20abi from "@/assets/json/erc20.json";
+import { connect } from "@argent/get-starknet";
+import { Contract } from "starknet";
+
+export class LifeSourceAgent {
   tools: any;
   toolsDescription: any;
   executionContext: any;
+
   constructor() {
     this.tools = {
       searchDocs: this.searchDocs,
@@ -17,6 +40,17 @@ class LifeSourceAgent {
     };
     this.executionContext = {};
   }
+  async getSNConnection() {
+    const starknet = await connect({
+      chainId: "SN_GOERLI",
+      webWalletUrl: "https://rpc.nethermind.io/sepolia-juno",
+    });
+    if (starknet === null) return;
+    await starknet.enable();
+    console.log(starknet.provider);
+    return starknet;
+  }
+
   private promptLLM(prompt: string): string {
     // const response = client.chat.completions.create({
     //   model: "gpt-4",

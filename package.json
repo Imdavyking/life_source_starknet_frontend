@@ -8,6 +8,7 @@
     "start": "serve -s dist"
   },
   "dependencies": {
+    "@argent/get-starknet": "^6.4.7",
     "@ckeditor/ckeditor5-build-balloon": "^29.1.0",
     "@ckeditor/ckeditor5-build-balloon-block": "^29.1.0",
     "@ckeditor/ckeditor5-build-classic": "^29.1.0",
