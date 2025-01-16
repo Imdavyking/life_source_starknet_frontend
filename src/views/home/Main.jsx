@@ -2,6 +2,7 @@
 
 import React from "react";
 import DarkModeSwitcher from "@/components/dark-mode-switcher/Main";
+import ChatBox from "@/components/chat-bot/Main";
 import { Link } from "react-router-dom";
 import Footer from "@/base-components/footer";
 import logoUrl from "@/assets/images/logo.png";
@@ -21,6 +22,7 @@ const Home = () => {
   return (
     <>
       <div>
+        <ChatBox />
         <DarkModeSwitcher />
         <div>
           <div className="flex justify-between items-center w-full">
