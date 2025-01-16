@@ -73,7 +73,7 @@ export class LifeSourceAgent {
     this.tools = {
       getUsdToTokenPrice: this.getUsdToTokenPrice,
       approve: this.approve,
-      donateToFoundation: this.donateToFoundation,
+      donate: this.donateToFoundation,
       redeemCode: this.redeemCode,
       addPoints: this.addPoints,
     };
@@ -92,13 +92,13 @@ export class LifeSourceAgent {
     this.executionContext = {};
   }
 
-  getNextApiKey = () => {
+  private getNextApiKey = () => {
     this.currentApiKeyIndex =
       (this.currentApiKeyIndex + 1) % geminiApiKeys.length; // Circular rotation of API keys
     return geminiApiKeys[this.currentApiKeyIndex];
   };
 
-  async getSNConnection() {
+  private async getSNConnection() {
     let starknet = getStarknet();
     if (!starknet.isConnected) {
       await starknet.enable();
@@ -109,19 +109,22 @@ export class LifeSourceAgent {
     }
   }
 
-  async protocolContract() {
+  private async protocolContract() {
     let account = await this.getSNConnection();
     let contract = new Contract(abi, PROTOCOL_ADDRESS, account);
     return { contract, account };
   }
 
-  async erc20Contract(address: string) {
+  private async erc20Contract(address: string) {
     let account = await this.getSNConnection();
     let contract = new Contract(erc20abi, address, account);
     return { contract, account };
   }
 
-  async getUsdToTokenPrice(tokenAddress: string, amountInUsd: number | string) {
+  private async getUsdToTokenPrice(
+    tokenAddress: string,
+    amountInUsd: number | string
+  ) {
     let { contract: protocolContract, account } = await this.protocolContract();
     const getUsdToTokenPriceCall = protocolContract.populate(
       "get_usd_to_token_price",
@@ -131,7 +134,10 @@ export class LifeSourceAgent {
     return amountToDonate;
   }
 
-  async donateToFoundation(tokenAddress: string, amountInUsd: number | string) {
+  private async donateToFoundation(
+    tokenAddress: string,
+    amountInUsd: number | string
+  ) {
     let { contract: protocolContract, account } = await this.protocolContract();
     const donateCall = protocolContract.populate("donate_to_foundation", [
       tokenAddress,
@@ -141,14 +147,14 @@ export class LifeSourceAgent {
     await account?.waitForTransaction(donateTx.transaction_hash);
     return donateTx;
   }
-  async redeemCode(points: number | string) {
+  private async redeemCode(points: number | string) {
     let { contract: protocolContract, account } = await this.protocolContract();
     const redeemCode = protocolContract.populate("redeem_code", [points]);
     const redeemTx = await account!.execute(redeemCode);
     await account?.waitForTransaction(redeemTx.transaction_hash);
     return redeemTx;
   }
-  async addPoints(weight: number | string) {
+  private async addPoints(weight: number | string) {
     let { contract: protocolContract, account } = await this.protocolContract();
     const addPoints = protocolContract.populate("add_point_from_weight", [
       weight,
@@ -158,7 +164,7 @@ export class LifeSourceAgent {
     return addPointsTx;
   }
 
-  async approve(tokenAddress: string, amount: number | string) {
+  private async approve(tokenAddress: string, amount: number | string) {
     let { contract: erc20Contract, account } = await this.erc20Contract(
       tokenAddress
     );
@@ -215,9 +221,7 @@ export class LifeSourceAgent {
 
     return prompt;
   }
-  /**
-   * Decide the next action to be taken by the agent
-   */
+
   private async getNextAction(
     task: string,
     context: { [key: string]: any }
@@ -238,6 +242,7 @@ export class LifeSourceAgent {
     const nextAction = await this.promptLLM(prompt);
     return JSON.parse(nextAction);
   }
+
   private async executeAction(
     action: { [key: string]: any },
     context: { [key: string]: any }

@@ -49,7 +49,7 @@ function Main() {
   const handleClick = async () => {
     let agent = new LifeSourceAgent();
     await agent.solveTask(`
-      approve 2 STRK
+      donate 5usd in strk to foundation
       `);
     console.log(agent);
     return;
