@@ -1,23 +1,23 @@
 class LifeSourceAgent {
   tools: any;
-  tools_description: any;
-  execution_context: any;
+  toolsDescription: any;
+  executionContext: any;
   constructor() {
     this.tools = {
-      search_docs: this.search_docs,
+      searchDocs: this.searchDocs,
       calculate: this.calculate,
-      write_file: this.write_file,
+      writeFile: this.writeFile,
     };
-    this.tools_description = {
-      search_docs:
+    this.toolsDescription = {
+      searchDocs:
         "available arguments are 'pricing' and 'features',return text",
       calculate:
         "the arguments should be an numerical expression that will be executed as eval() in interpreter,returns the output",
-      write_file: "the argument should be the text to be written in the file",
+      writeFile: "the argument should be the text to be written in the file",
     };
-    this.execution_context = {};
+    this.executionContext = {};
   }
-  private call_llm(prompt: string): string {
+  private promptLLM(prompt: string): string {
     // const response = client.chat.completions.create({
     //   model: "gpt-4",
     //   as: "user",
@@ -26,7 +26,7 @@ class LifeSourceAgent {
     const response = "";
     return response;
   }
-  private search_docs(query: string): string | undefined | null {
+  private searchDocs(query: string): string | undefined | null {
     const docs: { [key: string]: string } = {
       pricing: "Basic Plan: $10/month\nPro plan: $20/month",
       features: "Features: AI chat,file storage, API access",
@@ -36,19 +36,19 @@ class LifeSourceAgent {
   private calculate(expression: string): number {
     return eval(expression);
   }
-  private write_file(text: string) {
+  private writeFile(text: string) {
     return `Successfully wrote: ${text}`;
   }
   /**
    * Decide the next action to be taken by the agent
    */
-  private get_next_action(
+  private getNextAction(
     task: string,
     context: { [key: string]: any }
   ): { [key: string]: any } {
     const prompt = `
     Task: ${task}
-    Available tools: ${this.tools_description}
+    Available tools: ${this.toolsDescription}
     Current context: ${context}
     Determine the next action to take based on the current context and available tools.
     Previous results can be referenced using {{result_X}} where X is the step number.
@@ -57,10 +57,10 @@ class LifeSourceAgent {
     if task is complete,respond with:
     {{"task": "TASK_COMPLETE","args": ""}}
     `;
-    const next_action = this.call_llm(prompt);
-    return JSON.parse(next_action);
+    const nextAction = this.promptLLM(prompt);
+    return JSON.parse(nextAction);
   }
-  private execute_action(
+  private executeAction(
     action: { [key: string]: any },
     context: { [key: string]: any }
   ) {
@@ -80,17 +80,17 @@ class LifeSourceAgent {
     return tool(args);
   }
 
-  public solve_task(task: string): string[] {
+  public solveTask(task: string): string[] {
     const context: { [key: string]: any } = {};
     const results = [];
     let step = 0;
     while (true) {
-      const action = this.get_next_action(task, context);
+      const action = this.getNextAction(task, context);
       console.log(`Planned action: ${JSON.stringify(action)}`);
       if (action["tool"] == "TASK_COMPLETE") {
         break;
       }
-      const result = this.execute_action(action, context);
+      const result = this.executeAction(action, context);
       console.log(`Result: ${result}`);
       step += 1;
       context[`result_${step}`] = result;
