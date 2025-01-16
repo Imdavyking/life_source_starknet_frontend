@@ -40,6 +40,7 @@ export class LifeSourceAgent {
     };
     this.executionContext = {};
   }
+
   async getSNConnection() {
     let starknet = getStarknet();
     if (!starknet.isConnected) {
@@ -47,23 +48,8 @@ export class LifeSourceAgent {
     }
     if (starknet.selectedAddress) {
       let account = starknet.account;
+      return account;
     }
-    // import { connect } from "starknetkit";
-    // // Let the user pick a wallet (on button click)
-    // const starknet = connect()
-    // if (!starknet) {
-    //   throw Error("User rejected wallet selection or silent connect found nothing")
-    // }
-    // // (optional) connect the wallet
-    // await starknet.enable()
-    // // Check if connection was successful
-    // if(starknet.isConnected) {
-    //     // If the extension was installed and successfully connected, you have access to a starknet.js Signer object to do all kinds of requests through the user's wallet contract.
-    //     starknet.account.execute({ ... })
-    // } else {
-    //     // In case the extension wasn't successfully connected you still have access to a starknet.js Provider to read starknet states and sent anonymous transactions
-    //     starknet.provider.callContract( ... )
-    // }
   }
 
   private promptLLM(prompt: string): string {
