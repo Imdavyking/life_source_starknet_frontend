@@ -204,13 +204,13 @@ export class LifeSourceAgent {
   }
 
   private async promptLLM(prompt: string): Promise<string> {
-    const googleLLM = await this.googleLLM(prompt);
-    if (googleLLM) {
-      return googleLLM!;
-    }
     const openaiLLM = await this.openAILLM(prompt);
     if (openaiLLM) {
       return openaiLLM!;
+    }
+    const googleLLM = await this.googleLLM(prompt);
+    if (googleLLM) {
+      return googleLLM!;
     }
 
     return prompt;
