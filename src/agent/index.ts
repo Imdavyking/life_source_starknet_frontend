@@ -101,7 +101,7 @@ export class LifeSourceAgent {
   private async getSNConnection() {
     let starknet = getStarknet();
     if (!starknet.isConnected) {
-      await starknet.enable({});
+      await starknet.enable();
     }
     if (starknet.selectedAddress) {
       let account = starknet.account;
