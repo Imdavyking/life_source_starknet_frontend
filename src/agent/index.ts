@@ -121,10 +121,13 @@ export class LifeSourceAgent {
     return { contract, account };
   }
 
-  private async getUsdToTokenPrice(
-    tokenAddress: string,
-    amountInUsd: number | string
-  ) {
+  private async getUsdToTokenPrice({
+    tokenAddress,
+    amountInUsd,
+  }: {
+    tokenAddress: string;
+    amountInUsd: number | string;
+  }) {
     let { contract: protocolContract, account } = await this.protocolContract();
     const getUsdToTokenPriceCall = protocolContract.populate(
       "get_usd_to_token_price",
@@ -134,10 +137,13 @@ export class LifeSourceAgent {
     return amountToDonate;
   }
 
-  private async donateToFoundation(
-    tokenAddress: string,
-    amountInUsd: number | string
-  ) {
+  private async donateToFoundation({
+    tokenAddress,
+    amountInUsd,
+  }: {
+    tokenAddress: string;
+    amountInUsd: number | string;
+  }) {
     let { contract: protocolContract, account } = await this.protocolContract();
     const donateCall = protocolContract.populate("donate_to_foundation", [
       tokenAddress,
@@ -164,7 +170,13 @@ export class LifeSourceAgent {
     return addPointsTx;
   }
 
-  private async approve(tokenAddress: string, amount: number | string) {
+  private async approve({
+    tokenAddress,
+    amount,
+  }: {
+    tokenAddress: string;
+    amount: number | string;
+  }) {
     let { contract: erc20Contract, account } = await this.erc20Contract(
       tokenAddress
     );
