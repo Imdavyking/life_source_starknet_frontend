@@ -5,6 +5,7 @@ import abi from "@/assets/json/abi.json";
 import erc20abi from "@/assets/json/erc20.json";
 import { Contract } from "starknet";
 import { getStarknet } from "get-starknet";
+import OpenAI from "openai";
 
 export class LifeSourceAgent {
   tools: any;
@@ -15,7 +16,9 @@ export class LifeSourceAgent {
     this.tools = {
       getUsdToTokenPrice: this.getUsdToTokenPrice,
       approve: this.approve,
-      donate: this.donateToFoundation,
+      donateToFoundation: this.donateToFoundation,
+      redeemCode: this.redeemCode,
+      addPoints: this.addPoints,
     };
     this.toolsDescription = {
       getUsdToTokenPrice:
@@ -24,6 +27,10 @@ export class LifeSourceAgent {
         "arguments: tokenAddress (string), amount (number or string); approves the protocol to spend the specified amount",
       donate:
         "arguments: tokenAddress (string), amountInUsd (number or string); donates the specified USD value in tokens to the foundation",
+      redeemCode:
+        "arguments: points (number or string); redeems points for a code",
+      addPoints:
+        "arguments: weight (number or string); adds points to the user based on weight",
     };
     this.executionContext = {};
   }
@@ -101,22 +108,25 @@ export class LifeSourceAgent {
     return approveTx;
   }
 
-  private promptLLM(prompt: string): string {
-    // const response = client.chat.completions.create({
-    //   model: "gpt-4",
-    //   as: "user",
-    //   prompt,
-    // });
-    const response = "";
-    return response;
+  private async promptLLM(prompt: string): Promise<string> {
+    const openai = new OpenAI({
+      apiKey: process.env["OPENAI_API_KEY"],
+    });
+
+    const chatCompletion = await openai.chat.completions.create({
+      messages: [{ role: "user", content: prompt }],
+      model: "gpt-3.5-turbo",
+    });
+
+    return chatCompletion.choices[0].message.content!;
   }
   /**
    * Decide the next action to be taken by the agent
    */
-  private getNextAction(
+  private async getNextAction(
     task: string,
     context: { [key: string]: any }
-  ): { [key: string]: any } {
+  ): Promise<{ [key: string]: any }> {
     const prompt = `
     Task: ${task}
     Available tools: ${this.toolsDescription}
@@ -128,7 +138,7 @@ export class LifeSourceAgent {
     if task is complete,respond with:
     {{"task": "TASK_COMPLETE","args": ""}}
     `;
-    const nextAction = this.promptLLM(prompt);
+    const nextAction = await this.promptLLM(prompt);
     return JSON.parse(nextAction);
   }
   private executeAction(
@@ -151,12 +161,12 @@ export class LifeSourceAgent {
     return tool(args);
   }
 
-  public solveTask(task: string): string[] {
+  public async solveTask(task: string): Promise<string[]> {
     const context: { [key: string]: any } = {};
     const results = [];
     let step = 0;
     while (true) {
-      const action = this.getNextAction(task, context);
+      const action = await this.getNextAction(task, context);
       console.log(`Planned action: ${JSON.stringify(action)}`);
       if (action["tool"] == "TASK_COMPLETE") {
         break;
