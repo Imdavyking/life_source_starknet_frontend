@@ -1,11 +1,12 @@
 # syntax=docker/dockerfile:1
 
 ARG NODE_VERSION=22.8.0
+ARG NODE_ENV=development
 
 FROM node:${NODE_VERSION}-alpine
 
 # Use production node environment by default.
-ENV NODE_ENV development
+ENV NODE_ENV=${NODE_ENV}
 
 
 WORKDIR /usr/src/app
@@ -17,7 +18,11 @@ WORKDIR /usr/src/app
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=yarn.lock,target=yarn.lock \
     --mount=type=cache,target=/root/.yarn \
-    yarn install --production=false --frozen-lockfile
+    if [ "${NODE_ENV}" = "production" ]; then \
+        yarn install --production=true --frozen-lockfile; \
+    else \
+        yarn install --production=false --frozen-lockfile; \
+    fi
 
 RUN chown -R node /usr/src/app/node_modules
 
