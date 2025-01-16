@@ -40,16 +40,6 @@ export class LifeSourceAgent {
     };
     this.executionContext = {};
   }
-  async getSNConnection() {
-    const starknet = await connect({
-      chainId: "SN_GOERLI",
-      webWalletUrl: "https://rpc.nethermind.io/sepolia-juno",
-    });
-    if (starknet === null) return;
-    await starknet.enable();
-    console.log(starknet.provider);
-    return starknet;
-  }
 
   private promptLLM(prompt: string): string {
     // const response = client.chat.completions.create({
