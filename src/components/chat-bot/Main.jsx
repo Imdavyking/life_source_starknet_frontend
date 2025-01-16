@@ -19,17 +19,18 @@ const ChatWithAdminBot = () => {
       const data = userInput;
       setUserInput("");
       const response = await agent.solveTask(data);
-      console.log({ response });
-      respondToUser();
+      respondToUser(response);
     }
   };
 
-  const respondToUser = () => {
+  const respondToUser = (response) => {
     setTimeout(() => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: "This is a response from the chatbot.", sender: "bot" },
-      ]);
+      response.map((res) => {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { text: res, sender: "bot" },
+        ]);
+      });
     }, 500);
   };
 
