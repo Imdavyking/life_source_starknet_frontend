@@ -63,6 +63,7 @@
     "tom-select": "^1.7.5",
     "xlsx": "^0.16.9",
     "yup": "^0.32.11",
+    "get-starknet": "^1.5.0",
     "zoom-vanilla.js": "^2.0.6"
   },
   "devDependencies": {
