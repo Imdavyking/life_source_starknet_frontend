@@ -119,7 +119,7 @@ const ChatWithAdminBot = () => {
                 onChange={(e) => setUserInput(e.target.value)}
                 onKeyPress={handleInputKeyPress}
                 placeholder="Type a message"
-                className="w-full px-3 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border text-black rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button
                 onClick={handleSend}
