@@ -138,7 +138,8 @@ const ChatWithAdminBot = () => {
                 StarkNet's native token).
               </li>
               <li>
-                <strong>add points:</strong> Add points to your account.
+                <strong>add points:</strong> Add points (measured in grams) to
+                your account.
               </li>
               <li>
                 <strong>redeem points:</strong> Redeem points for rewards.
