@@ -17,7 +17,7 @@ class LifeSourceAgent {
     };
     this.execution_context = {};
   }
-  call_llm(prompt: string): string {
+  private call_llm(prompt: string): string {
     // const response = client.chat.completions.create({
     //   model: "gpt-4",
     //   as: "user",
@@ -26,23 +26,23 @@ class LifeSourceAgent {
     const response = "";
     return response;
   }
-  search_docs(query: string): string | undefined | null {
+  private search_docs(query: string): string | undefined | null {
     const docs: { [key: string]: string } = {
       pricing: "Basic Plan: $10/month\nPro plan: $20/month",
       features: "Features: AI chat,file storage, API access",
     };
     return docs[query] as any;
   }
-  calculate(expression: string): number {
+  private calculate(expression: string): number {
     return eval(expression);
   }
-  write_file(text: string) {
+  private write_file(text: string) {
     return `Successfully wrote: ${text}`;
   }
   /**
    * Decide the next action to be taken by the agent
    */
-  get_next_action(
+  private get_next_action(
     task: string,
     context: { [key: string]: any }
   ): { [key: string]: any } {
@@ -60,7 +60,7 @@ class LifeSourceAgent {
     const next_action = this.call_llm(prompt);
     return JSON.parse(next_action);
   }
-  execute_action(
+  private execute_action(
     action: { [key: string]: any },
     context: { [key: string]: any }
   ) {
@@ -80,7 +80,7 @@ class LifeSourceAgent {
     return tool(args);
   }
 
-  solve_task(task: string): string[] {
+  public solve_task(task: string): string[] {
     const context: { [key: string]: any } = {};
     const results = [];
     let step = 0;
