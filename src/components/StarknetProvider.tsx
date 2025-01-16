@@ -19,7 +19,6 @@ import { WebWalletConnector } from "starknetkit/webwallet";
 const apiKey = import.meta.env.VITE_PUBLIC_API_KEY;
 const nodeProvider = import.meta.env.VITE_PUBLIC_PROVIDER;
 
-
 interface StarknetProviderProps {
   children: React.ReactNode;
 }
@@ -45,7 +44,7 @@ export function StarknetProvider({ children }: StarknetProviderProps) {
     provider = lavaProvider({ apiKey });
   } else if (nodeProvider == "nethermind") {
     provider = nethermindProvider({ apiKey });
-  } else if (nodeProvider == "reddio"){
+  } else if (nodeProvider == "reddio") {
     provider = reddioProvider({ apiKey });
   }
 

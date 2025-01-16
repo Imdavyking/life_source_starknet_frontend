@@ -7,6 +7,7 @@ import { Contract } from "starknet";
 import { getStarknet } from "get-starknet";
 import OpenAI from "openai";
 
+const openAIApiKey = import.meta.env.VITE_OPENAI_API_KEY;
 export class LifeSourceAgent {
   tools: any;
   toolsDescription: any;
@@ -110,7 +111,7 @@ export class LifeSourceAgent {
 
   private async promptLLM(prompt: string): Promise<string> {
     const openai = new OpenAI({
-      apiKey: process.env["OPENAI_API_KEY"],
+      apiKey: openAIApiKey,
     });
 
     const chatCompletion = await openai.chat.completions.create({
