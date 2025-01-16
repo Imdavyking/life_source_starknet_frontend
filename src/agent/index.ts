@@ -1,19 +1,5 @@
 /** @format */
 
-import DarkModeSwitcher from "@/components/dark-mode-switcher/Main";
-import { Link } from "react-router-dom";
-import logoUrl from "@/assets/images/logo.png";
-import donateHeart from "@/assets/images/donate-heart.svg";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { FaSpinner } from "react-icons/fa";
-import {
-  useAccount,
-  useContract,
-  useSendTransaction,
-  useReadContract,
-} from "@starknet-react/core";
-import { uint256 } from "starknet";
 import { PROTOCOL_ADDRESS } from "../utils/constants";
 import abi from "@/assets/json/abi.json";
 import erc20abi from "@/assets/json/erc20.json";
@@ -27,16 +13,17 @@ export class LifeSourceAgent {
 
   constructor() {
     this.tools = {
-      searchDocs: this.searchDocs,
-      calculate: this.calculate,
-      writeFile: this.writeFile,
+      getUsdToTokenPrice: this.getUsdToTokenPrice,
+      approve: this.approve,
+      donate: this.donateToFoundation,
     };
     this.toolsDescription = {
-      searchDocs:
-        "available arguments are 'pricing' and 'features',return text",
-      calculate:
-        "the arguments should be an numerical expression that will be executed as eval() in interpreter,returns the output",
-      writeFile: "the argument should be the text to be written in the file",
+      getUsdToTokenPrice:
+        "arguments: tokenAddress (string), amountInUsd (number or string); returns the amount of tokens equivalent to the USD value",
+      approve:
+        "arguments: tokenAddress (string), amount (number or string); approves the protocol to spend the specified amount",
+      donate:
+        "arguments: tokenAddress (string), amountInUsd (number or string); donates the specified USD value in tokens to the foundation",
     };
     this.executionContext = {};
   }
@@ -50,6 +37,52 @@ export class LifeSourceAgent {
       let account = starknet.account;
       return account;
     }
+  }
+
+  async protocolContract() {
+    let account = await this.getSNConnection();
+    let contract = new Contract(abi, PROTOCOL_ADDRESS, account);
+    return { contract, account };
+  }
+
+  async erc20Contract(address: string) {
+    let account = await this.getSNConnection();
+    let contract = new Contract(erc20abi, address, account);
+    return { contract, account };
+  }
+
+  async getUsdToTokenPrice(tokenAddress: string, amountInUsd: number | string) {
+    let { contract: protocolContract, account } = await this.protocolContract();
+    const getUsdToTokenPriceCall = protocolContract.populate(
+      "get_usd_to_token_price",
+      [tokenAddress, amountInUsd]
+    );
+    const amountToDonate = await account!.callContract(getUsdToTokenPriceCall);
+    return amountToDonate;
+  }
+
+  async donateToFoundation(tokenAddress: string, amountInUsd: number | string) {
+    let { contract: protocolContract, account } = await this.protocolContract();
+    const donateCall = protocolContract.populate("donate_to_foundation", [
+      tokenAddress,
+      amountInUsd,
+    ]);
+    const donateTx = await account!.execute(donateCall);
+    await account?.waitForTransaction(donateTx.transaction_hash);
+    return donateTx;
+  }
+
+  async approve(tokenAddress: string, amount: number | string) {
+    let { contract: erc20Contract, account } = await this.erc20Contract(
+      tokenAddress
+    );
+    const approveCall = erc20Contract.populate("approve", [
+      PROTOCOL_ADDRESS,
+      amount,
+    ]);
+    const approveTx = await account!.execute(approveCall);
+    await account?.waitForTransaction(approveTx.transaction_hash);
+    return approveTx;
   }
 
   private promptLLM(prompt: string): string {
