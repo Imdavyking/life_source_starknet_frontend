@@ -1,13 +1,12 @@
 /** @format */
 
-import { PROTOCOL_ADDRESS } from "../utils/constants";
+import { FIAT_DECIMALS, PROTOCOL_ADDRESS } from "../utils/constants";
 import abi from "@/assets/json/abi.json";
 import erc20abi from "@/assets/json/erc20.json";
 import { Contract } from "starknet";
 import { getStarknet } from "get-starknet";
 import OpenAI from "openai";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { FIAT_DECIMALS } from "@/utils/constants";
 
 const openAIApiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
@@ -79,10 +78,12 @@ export class LifeSourceAgent {
       addPoints: this.addPoints,
     };
     this.toolsDescription = {
-      getUsdToTokenPrice: `arguments: tokenAddress (string), amountInUsd (number or string); returns the amount of tokens equivalent to the USD value, amountInUsd is multiplied by ${FIAT_DECIMALS} before calling it in argument`,
+      getUsdToTokenPrice:
+        "arguments: tokenAddress (string), amountInUsd (number or string); returns the amount of tokens equivalent to the USD value",
       approve:
         "arguments: tokenAddress (string), amount (number or string); approves the protocol to spend the specified amount",
-      donate: `arguments: tokenAddress (string), amountInUsd (number or string); donates the specified USD value in tokens to the foundation, call get_usd_to_token_price to get the amount of tokens in STARKNET, approve it and then call donate,amountInUsd is multiplied by ${FIAT_DECIMALS} before calling it in argument`,
+      donate:
+        "arguments: tokenAddress (string), amountInUsd (number or string); donates the specified USD value in tokens to the foundation, call get_usd_to_token_price to get the amount of tokens in STARKNET, approve it and then call donate",
       redeemCode:
         "arguments: points (number or string); redeems points for a code",
       addPoints:
@@ -127,6 +128,7 @@ export class LifeSourceAgent {
     tokenAddress: string;
     amountInUsd: number | string;
   }) {
+    amountInUsd = Number(amountInUsd) * FIAT_DECIMALS;
     let { contract: protocolContract, account } = await this.protocolContract();
     const getUsdToTokenPriceCall = protocolContract.populate(
       "get_usd_to_token_price",
@@ -143,7 +145,7 @@ export class LifeSourceAgent {
     tokenAddress: string;
     amountInUsd: number | string;
   }) {
-    console.log({ tokenAddress, amountInUsd });
+    amountInUsd = Number(amountInUsd) * FIAT_DECIMALS;
     let { contract: protocolContract, account } = await this.protocolContract();
     const donateCall = protocolContract.populate("donate_to_foundation", [
       tokenAddress,
