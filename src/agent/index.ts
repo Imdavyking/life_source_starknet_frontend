@@ -63,7 +63,7 @@ const geminiApiKeys = [
   import.meta.env.GEMINI_API_KEY_50 || "API_KEY_50",
 ];
 
-export class LifeSource {
+export class LifeSourceAgent {
   tools: any;
   toolsDescription: any;
   executionContext: any;

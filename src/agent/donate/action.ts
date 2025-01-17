@@ -10,7 +10,7 @@ import {
   State,
 } from "@elizaos/core";
 import { donateUsdInTokensExamples } from "./example";
-import { LifeSource } from "..";
+import { LifeSourceAgent } from "..";
 import { getDonationTemplate } from "./template";
 
 export const donateUsdInTokensAction: Action = {
@@ -54,7 +54,7 @@ export const donateUsdInTokensAction: Action = {
     }
 
     try {
-      const lifeSource = new LifeSource();
+      const lifeSource = new LifeSourceAgent();
 
       // Step 1: Get the token amount for the given USD value
       const tokenAmount = await lifeSource.getUsdToTokenPrice({

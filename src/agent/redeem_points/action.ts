@@ -10,7 +10,7 @@ import {
   State,
 } from "@elizaos/core";
 import { redeemPointsExamples } from "./example";
-import { LifeSource } from "..";
+import { LifeSourceAgent } from "..";
 import { getRedeemPointsTemplate } from "./template";
 
 export const redeemPointsAction: Action = {
@@ -57,7 +57,7 @@ export const redeemPointsAction: Action = {
     }
 
     try {
-      const lifeSource = new LifeSource();
+      const lifeSource = new LifeSourceAgent();
 
       // Step 1: Redeem points based on the points value
       await lifeSource.redeemCode(content.points as any);

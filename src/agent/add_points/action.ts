@@ -10,7 +10,7 @@ import {
   State,
 } from "@elizaos/core";
 import { addPointsExamples } from "./example";
-import { LifeSource } from "..";
+import { LifeSourceAgent } from "..";
 import { getAddPointsTemplate } from "./template";
 
 export const addPointsAction: Action = {
@@ -52,7 +52,7 @@ export const addPointsAction: Action = {
     }
 
     try {
-      const lifeSource = new LifeSource();
+      const lifeSource = new LifeSourceAgent();
 
       // Step 1: Add points based on the weight value
       await lifeSource.addPoints(content.weight as any);
