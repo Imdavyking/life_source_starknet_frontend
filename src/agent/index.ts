@@ -7,7 +7,9 @@ import { Contract, num } from "starknet";
 import { getStarknet } from "get-starknet";
 import OpenAI from "openai";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { IAgentRuntime, Plugin } from "@elizaos/core";
+import { AgentRuntime } from "@elizaos/core";
+import { donateToFoundation } from "./donate";
+import { getUsdToTokenPrice } from "./get_usd_to_token_price";
 
 const openAIApiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
@@ -284,20 +286,21 @@ export class LifeSource {
 
   public async solveTask(task: string): Promise<string[]> {
     const context: { [key: string]: any } = {};
-    const results = [];
-    let step = 0;
-    while (true) {
-      const action = await this.getNextAction(task, context);
-      console.log(`Planned action: ${JSON.stringify(action)}`);
-      if (action["tool"] == "TASK_COMPLETE") {
-        break;
-      }
-      const result = await this.executeAction(action, context);
-      console.log(`Result: ${JSON.stringify(result)}`);
-      step += 1;
-      context[`result_${step}`] = result;
-      results.push(result);
-    }
+    const results: string[] = [];
+
+    // let step = 0;
+    // while (true) {
+    //   const action = await this.getNextAction(task, context);
+    //   console.log(`Planned action: ${JSON.stringify(action)}`);
+    //   if (action["tool"] == "TASK_COMPLETE") {
+    //     break;
+    //   }
+    //   const result = await this.executeAction(action, context);
+    //   console.log(`Result: ${JSON.stringify(result)}`);
+    //   step += 1;
+    //   context[`result_${step}`] = result;
+    //   results.push(result);
+    // }
     return results;
   }
 }

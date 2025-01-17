@@ -1,5 +1,5 @@
 import { Plugin } from "@elizaos/core";
-import { getUsdToTokenPriceAction } from "./plugin";
+import { getUsdToTokenPriceAction } from "./action";
 
 export const getUsdToTokenPrice: Plugin = {
   name: "getUsdToTokenPrice",

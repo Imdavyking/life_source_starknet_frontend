@@ -1,13 +1,13 @@
 import { Plugin } from "@elizaos/core";
-import { getUsdToTokenPriceAction } from "./plugin";
+import { donateUsdInTokensAction } from "./action";
 
-export const getUsdToTokenPrice: Plugin = {
-  name: "getUsdToTokenPrice",
+export const donateToFoundation: Plugin = {
+  name: "donate",
   description:
-    "arguments: tokenAddress (string), amountInUsd (number or string); returns the amount of tokens equivalent to the USD value.",
-  actions: [getUsdToTokenPriceAction],
+    "arguments: tokenAddress (string), amountInUsd (number or string); donates the specified USD value in tokens to the foundation, call get_usd_to_token_price to get the amount of tokens in STARKNET, approve it and then call donate",
+  actions: [donateUsdInTokensAction],
   evaluators: [],
   providers: [],
 };
 
-export default getUsdToTokenPrice;
+export default donateToFoundation;
