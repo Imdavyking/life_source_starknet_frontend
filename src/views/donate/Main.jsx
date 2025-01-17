@@ -11,7 +11,7 @@ import { useAccount, useContract } from "@starknet-react/core";
 import { PROTOCOL_ADDRESS } from "../../utils/constants";
 import abi from "@/assets/json/abi.json";
 import erc20abi from "@/assets/json/erc20.json";
-import { FIAT_DECIMALS } from "../utils/constants";
+import { FIAT_DECIMALS } from "@/utils/constants";
 function Main() {
   useEffect(() => {
     dom("body").removeClass("main").removeClass("error-page").addClass("login");

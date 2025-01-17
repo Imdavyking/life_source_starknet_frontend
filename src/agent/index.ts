@@ -7,7 +7,7 @@ import { Contract } from "starknet";
 import { getStarknet } from "get-starknet";
 import OpenAI from "openai";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { FIAT_DECIMALS } from "../utils/constants";
+import { FIAT_DECIMALS } from "@/utils/constants";
 
 const openAIApiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
