@@ -158,7 +158,6 @@ export class LifeSourceAgent {
     return donateTx;
   }
   private async redeemCode(points: number | string) {
-    console.log(this);
     let { contract: protocolContract, account } = await this.protocolContract();
     const redeemCode = protocolContract.populate("redeem_code", [points]);
     const redeemTx = await account!.execute(redeemCode);
