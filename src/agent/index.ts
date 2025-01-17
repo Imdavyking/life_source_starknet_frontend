@@ -137,7 +137,6 @@ export class LifeSourceAgent {
     const amountToDonate: any = await account!.callContract(
       getUsdToTokenPriceCall
     );
-    console.log({ amountToDonate });
     return Number(amountToDonate.result[0]);
   }
 
