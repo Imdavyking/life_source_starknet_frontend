@@ -3,7 +3,7 @@
 import { FIAT_DECIMALS, PROTOCOL_ADDRESS } from "../utils/constants";
 import abi from "@/assets/json/abi.json";
 import erc20abi from "@/assets/json/erc20.json";
-import { Contract } from "starknet";
+import { Contract, num } from "starknet";
 import { getStarknet } from "get-starknet";
 import OpenAI from "openai";
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -79,7 +79,7 @@ export class LifeSourceAgent {
     };
     this.toolsDescription = {
       getUsdToTokenPrice:
-        "arguments: tokenAddress (string), amountInUsd (number or string); returns the amount of tokens equivalent to the USD value",
+        "arguments: tokenAddress (string), amountInUsd (number or string); returns the amount of tokens equivalent to the USD value,return the amount to approve and donate",
       approve:
         "arguments: tokenAddress (string), amount (number or string); approves the protocol to spend the specified amount",
       donate:
@@ -127,15 +127,18 @@ export class LifeSourceAgent {
   }: {
     tokenAddress: string;
     amountInUsd: number | string;
-  }) {
+  }): Promise<number> {
     amountInUsd = Number(amountInUsd) * FIAT_DECIMALS;
     let { contract: protocolContract, account } = await this.protocolContract();
     const getUsdToTokenPriceCall = protocolContract.populate(
       "get_usd_to_token_price",
       [tokenAddress, amountInUsd]
     );
-    const amountToDonate = await account!.callContract(getUsdToTokenPriceCall);
-    return amountToDonate;
+    const amountToDonate: any = await account!.callContract(
+      getUsdToTokenPriceCall
+    );
+    console.log({ amountToDonate });
+    return Number(amountToDonate.result[0]);
   }
 
   private async donateToFoundation({
