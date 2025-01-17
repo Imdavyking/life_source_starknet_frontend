@@ -290,7 +290,7 @@ export class LifeSourceAgent {
         break;
       }
       const result = await this.executeAction(action, context);
-      console.log(`Result: ${result}`);
+      console.log(`Result: ${JSON.stringify(result)}`);
       step += 1;
       context[`result_${step}`] = result;
       results.push(result);
