@@ -289,26 +289,20 @@ export class LifeSource {
   public async solveTask(task: string): Promise<string[]> {
     const context: { [key: string]: any } = {};
     const results: string[] = [];
-    const plugins = [
-      redeemPoint,
-      addPoint,
-      donateToFoundation,
-      getUsdToTokenPrice,
-    ];
 
-    // let step = 0;
-    // while (true) {
-    //   const action = await this.getNextAction(task, context);
-    //   console.log(`Planned action: ${JSON.stringify(action)}`);
-    //   if (action["tool"] == "TASK_COMPLETE") {
-    //     break;
-    //   }
-    //   const result = await this.executeAction(action, context);
-    //   console.log(`Result: ${JSON.stringify(result)}`);
-    //   step += 1;
-    //   context[`result_${step}`] = result;
-    //   results.push(result);
-    // }
+    let step = 0;
+    while (true) {
+      const action = await this.getNextAction(task, context);
+      console.log(`Planned action: ${JSON.stringify(action)}`);
+      if (action["tool"] == "TASK_COMPLETE") {
+        break;
+      }
+      const result = await this.executeAction(action, context);
+      console.log(`Result: ${JSON.stringify(result)}`);
+      step += 1;
+      context[`result_${step}`] = result;
+      results.push(result);
+    }
     return results;
   }
 }
