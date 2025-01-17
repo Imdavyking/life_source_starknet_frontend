@@ -36,11 +36,7 @@ function Main(props) {
       >
         <div className="mobile-menu-bar">
           <a href="" className="flex mr-auto">
-            <img
-              alt="LifeSource"
-              className="w-6"
-              src={logoUrl}
-            />
+            <img alt="LifeSource" className="w-6" src={logoUrl} />
           </a>
           <a
             href="#"

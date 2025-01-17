@@ -7,6 +7,7 @@ import { Contract, num } from "starknet";
 import { getStarknet } from "get-starknet";
 import OpenAI from "openai";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { IAgentRuntime, Plugin } from "@elizaos/core";
 
 const openAIApiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
@@ -63,7 +64,7 @@ const geminiApiKeys = [
   import.meta.env.GEMINI_API_KEY_50 || "API_KEY_50",
 ];
 
-export class LifeSourceAgent {
+export class LifeSource {
   tools: any;
   toolsDescription: any;
   executionContext: any;
@@ -121,7 +122,7 @@ export class LifeSourceAgent {
     return { contract, account };
   }
 
-  private async getUsdToTokenPrice({
+  async getUsdToTokenPrice({
     tokenAddress,
     amountInUsd,
   }: {
@@ -256,6 +257,7 @@ export class LifeSourceAgent {
     {{"task": "TASK_COMPLETE","args": ""}}
     `;
     const nextAction = await this.promptLLM(prompt);
+    console.log({ nextAction });
     return JSON.parse(nextAction);
   }
 

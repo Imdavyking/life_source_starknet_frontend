@@ -66,9 +66,9 @@ const ChatWithAdminBot = () => {
       </div>
 
       {isChatboxOpen && (
-        <div className="fixed bottom-24 right-4 w-96">
+        <div className="fixed bottom-24 right-4 w-96 z-50">
           <div className="bg-white shadow-md rounded-lg max-w-lg w-full">
-            <div className="p-4 border-b bg-blue-500 text-white rounded-t-lg flex justify-between items-center">
+            <div className="p-4 border-b bg-[#28334e] text-white rounded-t-lg flex justify-between items-center">
               <p className="text-lg font-semibold">AI Agent</p>
               <button
                 onClick={toggleChatbox}

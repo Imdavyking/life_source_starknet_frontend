@@ -32,6 +32,6 @@
     "src/pages/deposit.tsx",
     "src/app/withdraw",
     "src/components/WalletConnectProvider.tsx"
-  ],
+, "src/agent/take_order.js"  ],
   "exclude": ["node_modules"]
 }
