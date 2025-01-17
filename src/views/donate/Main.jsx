@@ -53,7 +53,13 @@ function Main() {
       try {
         setIsDonating(true);
 
-        const amountInUsdWithDecimals = Math.trunc(amountInUsd * 10 ** 2);
+        const FIAT_DECIMALS = 2;
+
+        const amountInUsdWithDecimals = Math.trunc(
+          amountInUsd * 10 ** FIAT_DECIMALS
+        );
+
+        console.log({ amountInUsdWithDecimals });
 
         const getUsdToTokenPriceCall = protocolContract.populate(
           "get_usd_to_token_price",
