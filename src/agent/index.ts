@@ -10,6 +10,8 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { AgentRuntime } from "@elizaos/core";
 import { donateToFoundation } from "./donate";
 import { getUsdToTokenPrice } from "./get_usd_to_token_price";
+import { addPoint } from "./add_points";
+import { redeemPoint } from "./redeem_points";
 
 const openAIApiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
@@ -287,6 +289,12 @@ export class LifeSource {
   public async solveTask(task: string): Promise<string[]> {
     const context: { [key: string]: any } = {};
     const results: string[] = [];
+    const plugins = [
+      redeemPoint,
+      addPoint,
+      donateToFoundation,
+      getUsdToTokenPrice,
+    ];
 
     // let step = 0;
     // while (true) {
