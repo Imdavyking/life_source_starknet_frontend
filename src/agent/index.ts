@@ -7,6 +7,7 @@ import { Contract } from "starknet";
 import { getStarknet } from "get-starknet";
 import OpenAI from "openai";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { FIAT_DECIMALS } from "../utils/constants";
 
 const openAIApiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
@@ -78,12 +79,10 @@ export class LifeSourceAgent {
       addPoints: this.addPoints,
     };
     this.toolsDescription = {
-      getUsdToTokenPrice:
-        "arguments: tokenAddress (string), amountInUsd (number or string); returns the amount of tokens equivalent to the USD value",
+      getUsdToTokenPrice: `arguments: tokenAddress (string), amountInUsd (number or string); returns the amount of tokens equivalent to the USD value, amountInUsd is multiplied by ${FIAT_DECIMALS} before calling it in argument`,
       approve:
         "arguments: tokenAddress (string), amount (number or string); approves the protocol to spend the specified amount",
-      donate:
-        "arguments: tokenAddress (string), amountInUsd (number or string); donates the specified USD value in tokens to the foundation, call get_usd_to_token_price to get the amount of tokens in STARKNET, approve it and then call donate",
+      donate: `arguments: tokenAddress (string), amountInUsd (number or string); donates the specified USD value in tokens to the foundation, call get_usd_to_token_price to get the amount of tokens in STARKNET, approve it and then call donate,amountInUsd is multiplied by ${FIAT_DECIMALS} before calling it in argument`,
       redeemCode:
         "arguments: points (number or string); redeems points for a code",
       addPoints:

@@ -1,25 +1,17 @@
 /** @format */
 
 import DarkModeSwitcher from "@/components/dark-mode-switcher/Main";
-import { Link } from "react-router-dom";
 import dom from "@left4code/tw-starter/dist/js/dom";
 import logoUrl from "@/assets/images/logo.png";
 import donateHeart from "@/assets/images/donate-heart.svg";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { FaSpinner } from "react-icons/fa";
-import {
-  useAccount,
-  useContract,
-  useSendTransaction,
-  useReadContract,
-} from "@starknet-react/core";
-import { uint256 } from "starknet";
+import { useAccount, useContract } from "@starknet-react/core";
 import { PROTOCOL_ADDRESS } from "../../utils/constants";
 import abi from "@/assets/json/abi.json";
 import erc20abi from "@/assets/json/erc20.json";
-import { LifeSourceAgent } from "../../agent/index";
-
+import { FIAT_DECIMALS } from "../utils/constants";
 function Main() {
   useEffect(() => {
     dom("body").removeClass("main").removeClass("error-page").addClass("login");
@@ -52,8 +44,6 @@ function Main() {
     } else {
       try {
         setIsDonating(true);
-
-        const FIAT_DECIMALS = 2;
 
         const amountInUsdWithDecimals = Math.trunc(
           amountInUsd * 10 ** FIAT_DECIMALS
