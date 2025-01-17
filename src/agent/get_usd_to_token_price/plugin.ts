@@ -9,9 +9,9 @@ import {
   ModelClass,
   State,
 } from "@elizaos/core";
-import { getUsdToTokenPriceTemplate } from "./getUsdToTokenPrice.template";
-import { getUsdToTokenPriceExamples } from "./getUsdToTokenPrice.example";
-import { LifeSource } from "../..";
+import { getUsdToTokenPriceTemplate } from "./template";
+import { getUsdToTokenPriceExamples } from "./example";
+import { LifeSource } from "..";
 export const getUsdToTokenPriceAction: Action = {
   name: "GET_USD_TO_TOKEN_PRICE",
   similes: [

@@ -122,7 +122,7 @@ export class LifeSource {
     return { contract, account };
   }
 
-  async getUsdToTokenPrice({
+  public async getUsdToTokenPrice({
     tokenAddress,
     amountInUsd,
   }: {
@@ -141,7 +141,7 @@ export class LifeSource {
     return Number(amountToDonate.result[0]);
   }
 
-  private async donateToFoundation({
+  public async donateToFoundation({
     tokenAddress,
     amountInUsd,
   }: {
@@ -158,14 +158,14 @@ export class LifeSource {
     await account?.waitForTransaction(donateTx.transaction_hash);
     return donateTx;
   }
-  private async redeemCode(points: number | string) {
+  public async redeemCode(points: number | string) {
     let { contract: protocolContract, account } = await this.protocolContract();
     const redeemCode = protocolContract.populate("redeem_code", [points]);
     const redeemTx = await account!.execute(redeemCode);
     await account?.waitForTransaction(redeemTx.transaction_hash);
     return redeemTx;
   }
-  private async addPoints(weight: number | string) {
+  public async addPoints(weight: number | string) {
     let { contract: protocolContract, account } = await this.protocolContract();
     const addPoints = protocolContract.populate("add_point_from_weight", [
       weight,
@@ -175,7 +175,7 @@ export class LifeSource {
     return addPointsTx;
   }
 
-  private async approve({
+  public async approve({
     tokenAddress,
     amount,
   }: {
